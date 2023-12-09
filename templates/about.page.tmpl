@@ -1,0 +1,19 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container mx-auto py-10">
+        <div class="flex flex-col">
+            <h1 class="text-2xl font-bold text-red-500">Hello ABOUT Page</h1>
+            <p class="text-md font-bold text-green-500">About content</p>
+            
+            <p>This came fromt the template: {{index .StringMap "test"}}</p>
+            <p>
+                {{if ne (index .StringMap "remote_ip") ""}}
+                    Your remote IP address is {{index .StringMap "remote_ip"}}
+                {{else}}
+                    I dont know your ip address yet. Visit the <a href="/">Home page</p>
+                {{end}}
+            </p>
+        </div>
+    </div>
+{{end}}
