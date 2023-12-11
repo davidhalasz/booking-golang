@@ -7,6 +7,9 @@
     <title>Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/styles.css">
 </head>
 <body>
     <div class="w-full">
@@ -61,7 +64,7 @@
                   </button>
         
                   <!-- Profile dropdown -->
-                <div @keydown.escape.stop="open = false; focusButton()" @click.away="onClickAway($event)" class="relative ml-3">
+                <div class="relative ml-3">
                     <div>
                       <button type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" x-ref="button" @click="() => open = !open" @keyup.space.prevent="onButtonEnter()" @keydown.enter.prevent="onButtonEnter()" aria-expanded="false" aria-haspopup="true" x-bind:aria-expanded="open.toString()" @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()">
                         <span class="absolute -inset-1.5"></span>
@@ -98,36 +101,225 @@
             </div>
             <div class="container mx-auto py-10">
                 <h2 class="font-bold text-xl text-center">Search for Availability</h2>
-                <form action="reservation.html" method="GET" class="mx-auto mt-4 max-w-xl sm:mt-20">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                <form id="availability-form" action="reservation.html" method="GET" novalidate class="needs-validation mx-auto mt-4 max-w-xl sm:mt-20">
+                    <div  id="reservation-dates" class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                       <div class="sm:col-span-2 md:col-span-1">
-                        <label for="start_date" class="block text-sm font-semibold leading-6 text-gray-900">Starting Date</label>
+                        <label for="start1" class="block text-sm font-semibold leading-6 text-gray-900">Starting Date</label>
                         <div class="mt-2.5">
-                          <input type="date" placeholder="Enter your starting date in the form of YYYY-MM-DD." name="start_date" id="start_date" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <input type="text" placeholder="Arrival" name="start1" id="start1" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required>
                         </div>
                       </div>
                       <div class="sm:col-span-2 md:col-span-1">
-                        <label for="end_date" class="block text-sm font-semibold leading-6 text-gray-900">Ending Date</label>
+                        <label for="end1" class="block text-sm font-semibold leading-6 text-gray-900">Ending Date</label>
                         <div class="mt-2.5">
-                          <input type="date" placeholder="Enter your starting date in the form of YYYY-MM-DD." name="end_date" id="end_date" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <input type="text" placeholder="Departure" name="end1" id="end1" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required>
                         </div>
                       </div>
                     <div class="mt-10 col-span-2">
                         <div class="flex justify-center">
                             <button type="submit" class="block w-fit rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Check Availability</button>
                         </div>
-                      
                     </div>
-                  </form>
+              </form>   
+              
+              <button id="checkBtn">Check Av</button>
             </div>
+
         </div>
-        
 
         <footer class="w-full py-10 bg-gray-700">
             <div class="container mx-auto flex justify-center">
                 <h1 class="text-2xl text-white font-bold">Footer Section</h1>
             </div>
         </footer>
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+        <script>
+            const elem = document.getElementById('reservation-dates');
+            const rangepicker = new DateRangePicker(elem, {
+              // ...options
+            }); 
+        </script>
+
+        <script>
+          let attention = Prompt();
+
+          const startDateInput = document.getElementById('start');
+          const endDateInput = document.getElementById('end');
+
+          document.getElementById('checkBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            let html = `
+            <form id="check-availability-form" action="" method="get" novalidate class="needs-validation">
+                    <div  id="reservation-dates-modal" class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                      <div class="sm:col-span-2 md:col-span-1">
+                        <label for="start" class="block text-sm font-semibold leading-6 text-gray-900">Starting Date</label>
+                        <div class="mt-2.5">
+                          <input type="text" placeholder="Arrival" name="start" id="start" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" disabled required>
+                        </div>
+                      </div>
+                      <div class="sm:col-span-2 md:col-span-1">
+                        <label for="end" class="block text-sm font-semibold leading-6 text-gray-900">Ending Date</label>
+                        <div class="mt-2.5">
+                          <input type="text" placeholder="Departure" name="end" id="end" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" disabled required>
+                        </div>
+                      </div>
+                    </div>
+              </form>        
+            `;
+
+            attention.custom({msg: html, title: "Choose your dates"});
+          });
+
+          document.getElementById('availability-form').addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Remove previous red borders
+            startDateInput.classList.add('ring-gray-300');
+            startDateInput.classList.remove('ring-red-500');
+            endDateInput.classList.add('ring-gray-300');
+            endDateInput.classList.remove('ring-red-500');
+
+            // Validate Start Date
+            if (!startDateInput.value) {
+              isValid = false;
+              startDateInput.classList.remove('ring-gray-300');
+              startDateInput.classList.add('ring-red-500'); // Add red border
+            }
+
+            // Validate End Date
+            if (!endDateInput.value) {
+              isValid = false;
+              endDateInput.classList.remove('ring-gray-300');
+              endDateInput.classList.add('ring-red-500'); // Add red border
+            }
+
+            // Add more validation as needed
+
+            if (!isValid) {
+              event.preventDefault();
+              // Display a general error message or highlight invalid fields
+            }
+          });
+
+          function notify(msg, msgType) {
+            notie.alert({
+              type: msgType,
+              text: msg,
+            })
+          }
+
+          function notifyModal(title, text, icon, confirmationButton) {
+            Swal.fire({
+              title: title,
+              html: text,
+              icon: icon,
+              confirmButtonText: confirmationButton
+            })
+          }
+
+          function Prompt() {
+            
+            let toast = function(c) {
+              const {
+                msg = "",
+                icon = "success",
+                position= "top-end",
+
+              } = c;
+
+              const Toast = Swal.mixin({
+                    toast: true,
+                    title: msg,
+                    position: position,
+                    icon: icon,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                      toast.onmouseenter = Swal.stopTimer;
+                      toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+
+                Toast.fire({});
+            }
+
+            let success = function(c) {
+              const {
+                msg = "",
+                title = "",
+                footer = "",
+              } = c;
+
+              Swal.fire({
+                icon: "success",
+                title: title,
+                text: msg,
+                footer: footer
+              });
+            }
+
+            let error = function(c) {
+              const {
+                msg = "",
+                title = "",
+                footer = "",
+              } = c;
+
+              Swal.fire({
+                icon: "error",
+                title: title,
+                text: msg,
+                footer: footer
+              });
+            }
+
+            async function custom(c) {
+              const {
+                msg = "",
+                title = "",
+              } = c;
+
+              const { value: formValues } = await Swal.fire({
+                title: title,
+                html: msg,
+                backdrop: false,
+                focusConfirm: false,
+                showCancelButton: true,
+                willOpen: () => {
+                  const elem = document.getElementById('reservation-dates-modal');
+                  const rp = new DateRangePicker(elem, {
+                    format: 'yyyy-mm-dd',
+                    showOnFocus: true,
+                  })
+                },
+                preConfirm: () => {
+                  return [
+                    document.getElementById('start').value,
+                    document.getElementById('end').value
+                  ];
+                },
+                didOpen: () => {
+                  document.getElementById('start').removeAttribute('disabled');
+                  document.getElementById('end').removeAttribute('disabled');
+                }
+              });
+              if (formValues) {
+                Swal.fire(JSON.stringify(formValues));
+              }
+            }
+
+            return {
+              toast: toast,
+              success: success,
+              error: error,
+              custom: custom,
+            }
+          }
+          
+        </script>
+        <script src="https://unpkg.com/notie"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </div>
 </body>
 </html>
