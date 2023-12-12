@@ -1,10 +1,40 @@
 {{template "base" .}}
 
 {{define "content"}}
-    <div class="container mx-auto py-10">
-        <div class="flex flex-col">
-            <h1 class="text-2xl font-bold text-blue-500">Hello HOME Page</h1>
-            <img src="/static/images/blackhouse.jpeg" class="w-[500px] h-[300px] object-contain"/>
+<div class="content min-h-screen">
+    <div class="w-full h-[600px] relative">
+        <img class="absolute w-full h-full object-cover" src="/static/images/outside.png" alt="">
+        <div
+            class="absolute w-full h-full backdrop-blur-sm bg-black/30 flex flex-col gap-4 justify-center items-center">
+            <h1 class="text-white font-bold text-5xl">Welcome to Fort Smythe Bed and Breakfast</h1>
+            <p class="text-white font-bold text-xl">Your home away from home, set on the majestic waters of the
+                AtlanticOcean, this will be a vacation to remember</p>
         </div>
     </div>
-{{end}}
+    <div class="container mx-auto py-10">
+        <div class="flex flex-col gap-4">
+            <h1 class="font-bold text-2xl">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+            <p>
+                Phasellus ultrices mauris nulla, ut mollis sem venenatis vitae. In tincidunt nisi metus, id consectetur
+                risus finibus et. Ut posuere eros non suscipit varius. Phasellus pharetra odio lorem, a tempor eros
+                volutpat non. Aliquam tincidunt congue urna vel porttitor. Cras rhoncus ex dolor, sed aliquam tellus
+                consectetur consequat. Integer sagittis eleifend enim, eu ullamcorper augue. Integer accumsan vestibulum
+                enim, a facilisis purus molestie ut. Etiam at facilisis erat, sit amet bibendum dui. Sed venenatis,
+                lacus nec accumsan tempus, arcu turpis pulvinar neque, eu dignissim ipsum tortor vel velit. Maecenas nec
+                lorem ligula.
+            </p>
+            <p>
+                Etiam pretium, sem et aliquam ornare, felis ipsum tristique sapien, ut tristique nunc turpis nec sapien.
+                Pellentesque ut nibh auctor turpis porttitor vestibulum. Praesent non lorem risus. Nullam mauris justo,
+                consectetur sit amet mollis eu, malesuada non ligula. Duis consequat consectetur turpis, vel rutrum diam
+                consectetur et. Mauris bibendum felis eu velit imperdiet feugiat. Aenean efficitur risus vitae felis
+                tincidunt bibendum. Suspendisse efficitur felis nisi, eget sagittis enim vehicula et.
+            </p>
+        </div>
+        <div class="flex justify-center mt-4">
+            <a href="/make-reservation" class="bg-emerald-500 rounded-md px-4 py-2 font-bold text-white">Make
+                Reservation Now</a>
+        </div>
+    </div>
+</div>
+{{end}}å

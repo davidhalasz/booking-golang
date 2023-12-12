@@ -1,0 +1,95 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="content min-h-screen">
+  <div class="w-full h-[400px] relative">
+    <img class="absolute w-full h-full object-cover object-center" src="/static/images/marjors-suite.png" alt="">
+    <div class="absolute w-full h-full backdrop-blur-sm bg-black/30 flex flex-col gap-4 justify-center items-center">
+      <h1 class="text-white font-bold text-5xl">Major's Suite</h1>
+    </div>
+  </div>
+  <div class="container mx-auto py-10">
+    <div class="flex flex-col gap-4">
+      <h1 class="font-bold text-2xl text-center">Major's Suite</h1>
+      <p>
+        Phasellus ultrices mauris nulla, ut mollis sem venenatis vitae. In tincidunt nisi metus, id consectetur risus
+        finibus et. Ut posuere eros non suscipit varius. Phasellus pharetra odio lorem, a tempor eros volutpat non.
+        Aliquam tincidunt congue urna vel porttitor. Cras rhoncus ex dolor, sed aliquam tellus consectetur consequat.
+        Integer sagittis eleifend enim, eu ullamcorper augue. Integer accumsan vestibulum enim, a facilisis purus
+        molestie ut. Etiam at facilisis erat, sit amet bibendum dui. Sed venenatis, lacus nec accumsan tempus, arcu
+        turpis pulvinar neque, eu dignissim ipsum tortor vel velit. Maecenas nec lorem ligula.
+      </p>
+      <p>
+        Etiam pretium, sem et aliquam ornare, felis ipsum tristique sapien, ut tristique nunc turpis nec sapien.
+        Pellentesque ut nibh auctor turpis porttitor vestibulum. Praesent non lorem risus. Nullam mauris justo,
+        consectetur sit amet mollis eu, malesuada non ligula. Duis consequat consectetur turpis, vel rutrum diam
+        consectetur et. Mauris bibendum felis eu velit imperdiet feugiat. Aenean efficitur risus vitae felis tincidunt
+        bibendum. Suspendisse efficitur felis nisi, eget sagittis enim vehicula et.
+      </p>
+    </div>
+    <div class="flex justify-center mt-4">
+      <a id="checkBtn" href="#!" class="bg-emerald-500 rounded-md px-4 py-2 font-bold text-white">Make Reservation
+        Now</a>
+    </div>
+  </div>
+</div>
+{{end}}
+
+{{define "js"}}
+<script>
+  document.getElementById('checkBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    let html = `
+    <form id="check-availability-form" action="" method="get" novalidate class="needs-validation">
+            <div  id="reservation-dates-modal" class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+              <div class="sm:col-span-2 md:col-span-1">
+                <label for="start" class="block text-sm font-semibold leading-6 text-gray-900">Starting Date</label>
+                <div class="mt-2.5">
+                  <input type="text" placeholder="Arrival" name="start" id="start" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" disabled required>
+                </div>
+              </div>
+              <div class="sm:col-span-2 md:col-span-1">
+                <label for="end" class="block text-sm font-semibold leading-6 text-gray-900">Ending Date</label>
+                <div class="mt-2.5">
+                  <input type="text" placeholder="Departure" name="end" id="end" autocomplete="organization" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" disabled required>
+                </div>
+              </div>
+            </div>
+      </form>        
+    `
+
+    attention.custom({
+      msg: html,
+      title: "Choose your dates",
+      willOpen: () => {
+        const elem = document.getElementById('reservation-dates-modal');
+        const rp = new DateRangePicker(elem, {
+          format: 'yyyy-mm-dd',
+          showOnFocus: true,
+        })
+      },
+      didOpen: () => {
+        document.getElementById('start').removeAttribute('disabled');
+        document.getElementById('end').removeAttribute('disabled');
+      },
+      callback: function (result) {
+        console.log("called");
+
+        let form = document.getElementById("check-availability-form");
+        let formData = new FormData(form);
+        formData.append("csrf_token", "{{.CSRFToken}}");
+
+        fetch('/search-availability-json', {
+          method: "post",
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+          })
+      }
+    });
+  });
+
+</script>
+{{end}}

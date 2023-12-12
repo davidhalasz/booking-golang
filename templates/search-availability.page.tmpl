@@ -1,0 +1,88 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="content min-h-screen">
+  <div class="w-full h-[400px] relative">
+    <img class="absolute w-full h-full object-cover object-center" src="/static/images/tray.png" alt="">
+    <div class="absolute w-full h-full backdrop-blur-sm bg-black/30 flex flex-col gap-4 justify-center items-center">
+      <h1 class="text-white font-bold text-5xl">Reservation</h1>
+    </div>
+  </div>
+  <div class="container mx-auto py-10">
+    <h2 class="font-bold text-xl text-center">Search for Availability</h2>
+    <form id="availability-form" action="/search-availability" method="post" novalidate
+      class="needs-validation mx-auto mt-4 max-w-xl sm:mt-20">
+      <input type="hidden" name="csrf_token" value={{.CSRFToken}} />
+      <div id="reservation-dates" class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div class="sm:col-span-2 md:col-span-1">
+          <label for="start" class="block text-sm font-semibold leading-6 text-gray-900">Starting Date</label>
+          <div class="mt-2.5">
+            <input type="text" placeholder="Arrival" name="start" id="start" autocomplete="organization"
+              class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required>
+          </div>
+        </div>
+        <div class="sm:col-span-2 md:col-span-1">
+          <label for="end" class="block text-sm font-semibold leading-6 text-gray-900">Ending Date</label>
+          <div class="mt-2.5">
+            <input type="text" placeholder="Departure" name="end" id="end" autocomplete="organization"
+              class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              required>
+          </div>
+        </div>
+        <div class="mt-10 col-span-2">
+          <div class="flex justify-center">
+            <button type="submit"
+              class="block w-fit rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Check
+              Availability</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</div>
+{{end}}
+
+{{define "js"}}
+<script>
+  const startDateInput = document.getElementById('start');
+  const endDateInput = document.getElementById('end');
+
+  function notify(msg, msgType) {
+    notie.alert({
+      type: msgType,
+      text: msg,
+    })
+  }
+
+
+  document.getElementById('availability-form').addEventListener('submit', function (event) {
+    let isValid = true;
+
+    // Remove previous red borders
+    startDateInput.classList.add('ring-gray-300');
+    startDateInput.classList.remove('ring-red-500');
+    endDateInput.classList.add('ring-gray-300');
+    endDateInput.classList.remove('ring-red-500');
+
+    // Validate Start Date
+    if (!startDateInput.value) {
+      isValid = false;
+      startDateInput.classList.remove('ring-gray-300');
+      startDateInput.classList.add('ring-red-500'); // Add red border
+    }
+
+    // Validate End Date
+    if (!endDateInput.value) {
+      isValid = false;
+      endDateInput.classList.remove('ring-gray-300');
+      endDateInput.classList.add('ring-red-500'); // Add red border
+    }
+
+    // Add more validation as needed
+
+    if (!isValid) {
+      event.preventDefault();
+      // Display a general error message or highlight invalid fields
+    }
+  });
+  {{ end }}
