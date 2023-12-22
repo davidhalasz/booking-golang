@@ -1,7 +1,7 @@
 {{template "base" .}}
 
 {{define "content"}}
-<div class="content min-h-screen">
+<div class="content min-h-screen w-full">
   <div class="w-full h-[400px] relative">
     <img class="absolute w-full h-full object-cover object-center" src="/static/images/tray.png" alt="">
     <div class="absolute w-full h-full backdrop-blur-sm bg-black/30 flex flex-col gap-4 justify-center items-center">
@@ -10,11 +10,20 @@
   </div>
   <div class="container mx-auto py-10">
     <h2 class="font-bold text-xl text-center">Make Reservation</h2>
-
+    
     {{$res := index .Data "reservation"}}
-
+    <div class="px-20">
+      <p>Room: {{$res.Room.RoomName}}</p>
+      <p>Arrival: {{index .StringMap "start_date"}}</p>
+      <p>Departure: {{index .StringMap "end_date"}}</p>
+    </div>
+    
     <form action="/make-reservation" method="post" class="mx-auto mt-4 max-w-xl sm:mt-20" novalidate>
       <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+      <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}">
+      <input type="hidden" name="end_date" value="{{index .StringMap "end_date"}}">
+      <input type="hidden" name="room_id" value="{{$res.RoomID}}">
+
       <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
         <div>
           <label for="first_name" class="block text-sm font-semibold leading-6 text-gray-900">First name {{with
@@ -32,25 +41,6 @@
               class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
           </div>
         </div>
-
-        <div>
-          <label for="start_date" class="block text-sm font-semibold leading-6 text-gray-900">Start Date {{with
-            .Form.Errors.Get "start_date"}}<span class="text-red-500">{{.}}</span>{{end}}</label>
-          <div class="mt-2.5">
-            <input type="text" name="start_date" id="start_date" value="{{$res.FirstName}}" autocomplete="family-name"
-              class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-        <div>
-          <label for="end_date" class="block text-sm font-semibold leading-6 text-gray-900">End Date {{with
-            .Form.Errors.Get "end_date"}}<span class="text-red-500">{{.}}</span>{{end}}</label>
-          <div class="mt-2.5">
-            <input type="text" name="end_date" id="end_date" value="{{$res.LastName}}" autocomplete="family-name"
-              class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-
-        <input type="hidden" name="room_id" value="1">
 
         <div class="sm:col-span-2">
           <label for="email" class="block text-sm font-semibold leading-6 text-gray-900">Email {{with .Form.Errors.Get
