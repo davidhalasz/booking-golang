@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"testing"
 	"text/template"
 	"time"
 
@@ -24,24 +25,7 @@ var app config.AppConfig
 var session *scs.SessionManager
 var pathToTemplates = "./../../templates"
 
-func NoSurf(next http.Handler) http.Handler {
-	csrfHandler := nosurf.New(next)
-
-	csrfHandler.SetBaseCookie(http.Cookie{
-		HttpOnly: true,
-		Path:     "/",
-		Secure:   app.InProduction,
-		SameSite: http.SameSiteLaxMode,
-	})
-
-	return csrfHandler
-}
-
-func SessionLoad(next http.Handler) http.Handler {
-	return session.LoadAndSave(next)
-}
-
-func getRoutes() http.Handler {
+func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 
 	app.InProduction = false
@@ -72,6 +56,28 @@ func getRoutes() http.Handler {
 	NewHandlers(repo)
 
 	render.NewRenderer(&app)
+
+	os.Exit(m.Run())
+}
+
+func NoSurf(next http.Handler) http.Handler {
+	csrfHandler := nosurf.New(next)
+
+	csrfHandler.SetBaseCookie(http.Cookie{
+		HttpOnly: true,
+		Path:     "/",
+		Secure:   app.InProduction,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	return csrfHandler
+}
+
+func SessionLoad(next http.Handler) http.Handler {
+	return session.LoadAndSave(next)
+}
+
+func getRoutes() http.Handler {
 
 	mux := chi.NewRouter()
 
