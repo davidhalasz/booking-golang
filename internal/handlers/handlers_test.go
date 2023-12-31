@@ -149,16 +149,16 @@ func TestRepository_PostReservation(t *testing.T) {
 		},
 	}
 
-	// reqBody := "first_name=Anshuman"
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Lawania")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=71anshuman@gmail.com")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=7891424299")
+	// reqBody := "first_name=David"
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Halasz")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=email@gmail.com")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=1234567")
 	// reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
 
 	postedData := url.Values{}
-	postedData.Add("first_name", "Anshuman")
-	postedData.Add("last_name", "Lawania")
-	postedData.Add("email", "71anshuman@gmail.com")
+	postedData.Add("first_name", "David")
+	postedData.Add("last_name", "Halasz")
+	postedData.Add("email", "email@gmail.com")
 	postedData.Add("phone", "9718594945")
 	postedData.Add("room_id", "1")
 
@@ -198,7 +198,7 @@ func TestRepository_PostReservation(t *testing.T) {
 	// Test Form isInvalid
 	// reqBody := "first_name=a"
 	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=l")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=71anshuman")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=email")
 	// reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
 
 	postedData = url.Values{}
@@ -240,17 +240,17 @@ func TestRepository_PostReservation(t *testing.T) {
 
 	// Test when unable to insert reservation
 
-	// reqBody = "first_name=Anshuman"
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Lawania")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=71anshuman@gmail.com")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=7891424299")
+	// reqBody = "first_name=David"
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=Halasz")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=email@gmail.com")
+	// reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=1234567")
 	// reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
 
 	postedData = url.Values{}
-	postedData.Add("first_name", "Anshuman")
-	postedData.Add("last_name", "Lawania")
-	postedData.Add("email", "71anshuman@gmail.com")
-	postedData.Add("phone", "7891424299")
+	postedData.Add("first_name", "David")
+	postedData.Add("last_name", "Halasz")
+	postedData.Add("email", "email@gmail.com")
+	postedData.Add("phone", "1234567")
 	postedData.Add("room_id", "1")
 
 	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))
@@ -275,9 +275,9 @@ func TestRepository_PostReservation(t *testing.T) {
 	// Test when unable to insert room restrictions
 	postedData = url.Values{}
 	postedData.Add("first_name", "Anshuman")
-	postedData.Add("last_name", "Lawania")
+	postedData.Add("last_name", "Halasz")
 	postedData.Add("email", "71anshuman@gmail.com")
-	postedData.Add("phone", "7891424299")
+	postedData.Add("phone", "1234567")
 	postedData.Add("room_id", "1")
 
 	req, _ = http.NewRequest("POST", "/make-reservation", strings.NewReader(postedData.Encode()))

@@ -32,6 +32,35 @@ func main() {
 	}
 	defer db.SQL.Close()
 
+	defer close(app.MailChan)
+
+	fmt.Println("Starting mail listener...")
+	listenForMail()
+
+	// msg := models.MailData{
+	// 	To:      "John@do.ca",
+	// 	From:    "me@here.com",
+	// 	Subject: "Some Subject",
+	// 	Content: "",
+	// }
+
+	// app.MailChan <- msg
+
+	//**********************//
+	// mail sending with go //
+	//**********************//
+	/*
+		from := "me@here.com"
+		auth := smtp.PlainAuth("", from, "", "localhost")
+		err = smtp.SendMail("localhost:1025", auth, from, []string{"you@there.com"}, []byte("Hello, world"))
+		if err != nil {
+			log.Println(err)
+		}
+	*/
+	//**********************//
+	// END //
+	//**********************//
+
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portnNumber))
 
 	srv := &http.Server{
@@ -49,6 +78,9 @@ func run() (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Restriction{})
 	gob.Register(models.Room{})
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	app.InProduction = false
 
