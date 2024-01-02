@@ -1,0 +1,224 @@
+{{define "admin"}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+  <link rel="stylesheet" type="text/css" href="static/css/styles.css">
+</head>
+
+<body>
+  <div class="w-full">
+    <nav x-data="{ open: false, openRooms: false, openAdmin: false }" class="bg-gray-800">
+      <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+          <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+            <!-- Mobile menu button-->
+            <button type="button"
+              class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              aria-controls="mobile-menu" @click="open = !open" aria-expanded="false"
+              x-bind:aria-expanded="open.toString()">
+              <span class="absolute -inset-0.5"></span>
+              <span class="sr-only">Open main menu</span>
+              <svg x-description="Icon when menu is closed." x-state:on="Menu open" x-state:off="Menu closed"
+                class="block h-6 w-6" :class="{ 'hidden': open, 'block': !(open) }" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5">
+                </path>
+              </svg>
+              <svg x-description="Icon when menu is open." x-state:on="Menu open" x-state:off="Menu closed"
+                class="hidden h-6 w-6" :class="{ 'block': open, 'hidden': !(open) }" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="flex flex-shrink-0 items-center">
+              <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&amp;shade=500"
+                alt="Your Company">
+            </div>
+            <div class="hidden sm:ml-6 sm:block">
+              <div class="flex space-x-4">
+                <a href="/" class="text-white rounded-md px-3 py-2 text-sm font-medium" x-state:on="Current"
+                  x-state:off="Default" aria-current="page"
+                  x-state-description="Current: &quot;bg-gray-900 text-white&quot;, Default: &quot;text-gray-300 hover:bg-gray-700 hover:text-white&quot;">
+                  Go to Public Page
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              {{if eq .IsAuthenticated 1}}
+              <div class="flex space-x-4">
+                <div class="relative">
+                  <button @click="() => openAdmin = !openAdmin"
+                    class="text-white rounded-md px-3 py-2 text-sm font-medium flex gap-1 items-center"
+                    x-state:on="Current" x-state:off="Default" aria-current="page"
+                    x-state-description="Current: &quot;bg-gray-900 text-white&quot;, Default: &quot;text-gray-300 hover:bg-gray-700 hover:text-white&quot;">
+                    <p>Admin</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
+                  <div x-show="openAdmin" x-transition:enter="transition ease-out duration-100"
+                    x-transition:enter-start="transform opacity-0 scale-95"
+                    x-transition:enter-end="transform opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-75"
+                    x-transition:leave-start="transform opacity-100 scale-100"
+                    x-transition:leave-end="transform opacity-0 scale-95"
+                    class="absolute left-0 z-10 mt-2 w-48 origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    x-ref="menu-items" x-description="Dropdown menu, show/hide based on menu state." role="menu"
+                    aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
+                    @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()"
+                    @keydown.tab="open = false" @keydown.enter.prevent="open = false; focusButton()"
+                    @keyup.space.prevent="open = false; focusButton()" style="display: none;">
+                    
+                    <a href="/admin/dashboard" class="block px-4 py-2 text-sm text-gray-700" x-state:on="Active"
+                      x-state:off="Not Active" role="menuitem" tabindex="-1" id="user-menu-item-0"
+                      @click="open = false; focusButton()">Dashboard</a>
+                    <a href="/user/logout" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                      id="user-menu-item-1" @click="open = false; focusButton()">Logout</a>
+                  </div>
+                </div>
+              </div>
+              
+              {{else}}
+              <button class="text-white rounded-md px-3 py-2 text-sm font-medium">
+                <a href="/user/login">Login</a>
+              </button>
+              {{end}} 
+          </div>
+        </div>
+      </div>
+
+      <div x-description="Mobile menu, show/hide based on menu state." class="sm:hidden" id="mobile-menu" x-show="open"
+        style="display: none;">
+        <div class="space-y-1 px-2 pb-3 pt-2">
+          <a href="#" class="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+            x-state:on="Current" x-state:off="Default" aria-current="page"
+            x-state-description="Current: &quot;bg-gray-900 text-white&quot;, Default: &quot;text-gray-300 hover:bg-gray-700 hover:text-white&quot;">Home</a>
+          <a href="#"
+            class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+            x-state-description="undefined: &quot;bg-gray-900 text-white&quot;, undefined: &quot;text-gray-300 hover:bg-gray-700 hover:text-white&quot;">Book
+            now</a>
+        </div>
+      </div>
+    </nav>
+
+    <div x-data="{ openReservation: false}" class="container mx-auto min-h-screen flex gap-8">
+      <div class="flex-none w-[300px] pt-4">
+        <div class="bg-slate-300 px-8 py-4 rounded-md">
+          <button class="text-slate-800 font-medium mt-2">
+            <a href="/admin/dashboard">Dashboard</a>
+          </button>
+            <button @click="() => openReservation = !openReservation"
+              class="text-slate-800 font-medium flex gap-1 items-center mt-2"
+              x-state:on="Current" x-state:off="Default" aria-current="page">
+              <p>Reservation</p>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+              </svg>
+            </button>
+            <div x-show="openReservation" x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="transform opacity-0 scale-95"
+              x-transition:enter-end="transform opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="transform opacity-100 scale-100"
+              x-transition:leave-end="transform opacity-0 scale-95"
+              class="w-fit origin-top-left py-1"
+              x-ref="menu-items" x-description="Dropdown menu, show/hide based on menu state." role="menu"
+              aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
+              @keydown.arrow-up.prevent="onArrowUp()" @keydown.arrow-down.prevent="onArrowDown()"
+              @keydown.tab="open = false" @keydown.enter.prevent="open = false; focusButton()"
+              @keyup.space.prevent="open = false; focusButton()" style="display: none;">
+              
+              <a href="/admin/reservations-new" class="block text-slate-800 ml-4" x-state:on="Active"
+                x-state:off="Not Active" role="menuitem" tabindex="-1" id="user-menu-item-0"
+                @click="open = false; focusButton()">New Reservation</a>
+              <a href="/admin/reservations-all" class="block text-slate-800 ml-4" role="menuitem" tabindex="-1"
+                id="user-menu-item-1" @click="open = false; focusButton()">All Reservation</a>
+            </div>
+            <button class="text-slate-800 font-medium mt-2">
+              <a href="/admin/reservations-calendar">Reservation Calendar</a>
+            </button>
+        </div>
+        
+      </div>
+      <div class="grow pt-4">
+        <h1 class="font-bold text-xl">
+          {{block "admin-title" .}}{{end}}
+        </h1>
+        {{block "content" .}}
+
+        {{end}}
+      </div>
+    </div>
+
+
+    <footer class="w-full py-10 bg-gray-700">
+      <div class="container mx-auto flex justify-center">
+        <h1 class="text-2xl text-white font-bold">Footer Section</h1>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+    <script src="https://unpkg.com/notie"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/app.js"></script>
+    <script>
+      let attention = Prompt();
+
+      if (document.getElementById('reservation-dates')) {
+        const elem = document.getElementById('reservation-dates');
+        const rangepicker = new DateRangePicker(elem, {
+          format: "yyyy-mm-dd",
+          minDate: new Date()
+        });
+      }
+
+      function notify(msg, msgType) {
+        notie.alert({
+          type: msgType,
+          text: msg,
+        })
+      }
+
+
+      function notifyModal(title, text, icon, confirmationButton) {
+        Swal.fire({
+          title: title,
+          html: text,
+          icon: icon,
+          confirmButtonText: confirmationButton
+        })
+      }
+
+      {{with .Error}}
+        notify("{{.}}", "error")
+      {{end}}
+
+      {{with .Flash}}
+        notify("{{.}}", "success")
+      {{end}}
+
+      {{with .Warning}}
+        notify("{{.}}", "warning")
+      {{end}}
+
+    </script>
+    {{block "js" .}}
+
+    {{end}}
+  </div>
+</body>
+
+</html>
+{{end}}

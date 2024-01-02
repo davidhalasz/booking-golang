@@ -12,6 +12,7 @@ import (
 	"github.com/davidhalasz/go-bookings/internal/config"
 	"github.com/davidhalasz/go-bookings/internal/driver"
 	"github.com/davidhalasz/go-bookings/internal/forms"
+	"github.com/davidhalasz/go-bookings/internal/helpers"
 	"github.com/davidhalasz/go-bookings/internal/models"
 	"github.com/davidhalasz/go-bookings/internal/render"
 	"github.com/davidhalasz/go-bookings/internal/repository"
@@ -441,4 +442,27 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 
 func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+	reservations, err := m.DB.AllReservations()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservations"] = reservations
+
+	render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
+}
+
+func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }
