@@ -1,11 +1,109 @@
 {{template "admin" .}}
 
 {{define "admin-title"}}
-    Reservation
+Reservation
 {{end}}
 
 {{define "content"}}
-<div>
-    show reservation
+{{$res := index .Data "reservation"}}
+{{$src := index .StringMap "src"}}
+<div class="container mx-auto flex flex-col">
+    <table class="table-auto w-full text-left mt-8">
+        <thead>
+            <tr>
+                <th class="p-2">ID</th>
+                <th class="p-2">Last Name</th>
+                <th class="p-2">Room</th>
+                <th class="p-2">Arrival</th>
+                <th class="p-2">Departure</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="odd:bg-slate-300 hover:shadow-md hover:bg-gray-100">
+                <td class="p-2">{{$res.ID}}</td>
+                <td class="p-2">
+                    {{$res.FirstName}} {{$res.LastName}}
+                </td>
+                <td class="p-2">{{$res.Room.RoomName}}</td>
+                <td class="p-2">{{humanDate $res.StartDate}}</td>
+                <td class="p-2">{{humanDate $res.EndDate}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form action="/admin/reservations/{{$src}}/{{$res.ID}}" method="post" class="mx-auto mt-4 w-full sm:mt-20"
+        novalidate>
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+        <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div>
+                <label for="first_name" class="block text-sm font-semibold leading-6 text-gray-900">First name {{with
+                    .Form.Errors.Get "first_name"}}<span class="text-red-500">{{.}}</span>{{end}}</label>
+                <div class="mt-2.5">
+                    <input type="text" name="first_name" id="first_name" value="{{$res.FirstName}}"
+                        autocomplete="family-name"
+                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+            </div>
+            <div>
+                <label for="last_name" class="block text-sm font-semibold leading-6 text-gray-900">Last name {{with
+                    .Form.Errors.Get "last_name"}}<span class="text-red-500">{{.}}</span>{{end}}</label>
+                <div class="mt-2.5">
+                    <input type="text" name="last_name" id="last_name" value="{{$res.LastName}}"
+                        autocomplete="family-name"
+                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+            </div>
+
+            <div class="sm:col-span-2">
+                <label for="email" class="block text-sm font-semibold leading-6 text-gray-900">Email {{with
+                    .Form.Errors.Get
+                    "email"}}<span class="text-red-500">{{.}}</span>{{end}}</label>
+                <div class="mt-2.5">
+                    <input type="email" name="email" id="email" autocomplete="email" value="{{$res.Email}}"
+                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+            </div>
+            <div class="sm:col-span-2">
+                <label for="phone" class="block text-sm font-semibold leading-6 text-gray-900">Phone {{with
+                    .Form.Errors.Get
+                    "phone"}} <span class="text-red-500">{{.}}</span>{{end}}</label>
+                <div class="mt-2.5">
+                    <input type="tel" name="phone" id="phone" autocomplete="phone" value="{{$res.Phone}}"
+                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+            </div>
+            <div class="mt-10 col-span-2">
+                <div class="flex justify-between items-center gap-4">
+                    <div class="flex gap-4 items-center">
+                        <button type="submit"
+                            class="block w-fit rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Save</button>
+                        <a id="processBtn" href="#!" onclick="processRes({{$res.ID}})"
+                            class="block w-fit rounded-md bg-green-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500">Mark
+                            as Processed</a>
+                        <a href="/admin/reservations-{{$src}}" class="font-bold text-red-500">Cancel</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+{{end}}
+
+{{define "js"}}
+    {{$src := index .StringMap "src"}}
+    <script>
+        function processRes(id) {
+            attention.custom({
+                icon: 'warning',
+                msg: 'Are you sure?',
+                callback: function (result) {
+                    if (result !== false) {
+                        window.location.href = "/admin/process-reservation/{{$src}}/" + id;
+                    }
+                }
+            })
+        }
+    </script>
 {{end}}
