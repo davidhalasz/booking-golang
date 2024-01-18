@@ -1,23 +1,52 @@
 {{template "admin" .}}
 
 {{define "admin-title"}}
-    Reservation Calendar
+Reservation Calendar
 {{end}}
 
 {{define "content"}}
 {{$now := index .Data "now"}}
+{{$rooms := index .Data "rooms"}}
+{{$dim := index .IntMap "days_in_month"}}
 <div class="mt-8">
     <div class="w-full flex justify-center">
         <h3 class="font-bold text-xl">{{formatDate $now "January"}} {{formatDate $now "2006"}}</h3>
     </div>
     <div class="w-full flex justify-between">
         <div>
-            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md" href="/admin/reservations-calendar?y={{index .StringMap "last_month_year"}}&m={{index .StringMap "last_month"}}">&lt;&lt;</a>
+            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md"
+                href="/admin/reservations-calendar?y={{index .StringMap " last_month_year"}}&m={{index
+                .StringMap "last_month" }}">&lt;&lt;</a>
         </div>
         <div>
-            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md" href="/admin/reservations-calendar?y={{index .StringMap "next_month_year"}}&m={{index .StringMap "next_month"}}">&gt;&gt;</a>
+            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md"
+                href="/admin/reservations-calendar?y={{index .StringMap " next_month_year"}}&m={{index
+                .StringMap "next_month" }}">&gt;&gt;</a>
         </div>
-        
     </div>
+    {{range $rooms}}
+    {{$roomId := .ID}}
+    <h4 class="mt-4 text-lg">{{$roomId}} {{.RoomName}}</h4>
+
+    <table class="table-auto w-full text-left mt-8">
+        <thead>
+            <tr>
+                {{range $index := iterate $dim}}
+                <th class="px-2 text-center bg-gray-100 border">{{add $index 1}}</th>
+                {{end}}
+            </tr>
+            <tr>
+                {{range $index := iterate $dim}}
+                <td class="px-2 text-center bg-white border">
+                    <input type="checkbox" name="" id="">
+                </td>
+                {{end}}
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+    {{end}}
 </div>
 {{end}}
