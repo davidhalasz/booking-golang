@@ -78,12 +78,13 @@ Reservation
                     <div class="flex gap-4 items-center">
                         <button type="submit"
                             class="block w-fit rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Save</button>
-                        <a id="processBtn" href="#!" onclick="processRes({{$res.ID}})"
+                        <a href="#!" onclick="processRes({{$res.ID}})"
                             class="block w-fit rounded-md bg-green-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500">Mark
                             as Processed</a>
                         <a href="/admin/reservations-{{$src}}" class="font-bold text-red-500">Cancel</a>
                     </div>
-
+                    <a href="#!" onclick="deleteRes({{$res.ID}})"
+                            class="block w-fit rounded-md bg-red-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500">Delete</a>
                 </div>
             </div>
         </div>
@@ -101,6 +102,18 @@ Reservation
                 callback: function (result) {
                     if (result !== false) {
                         window.location.href = "/admin/process-reservation/{{$src}}/" + id;
+                    }
+                }
+            })
+        }
+
+        function deleteRes(id) {
+            attention.custom({
+                icon: 'warning',
+                msg: 'Are you sure?',
+                callback: function (result) {
+                    if (result !== false) {
+                        window.location.href = "/admin/delete-reservation/{{$src}}/" + id;
                     }
                 }
             })
