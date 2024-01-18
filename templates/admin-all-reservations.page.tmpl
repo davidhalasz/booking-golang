@@ -5,27 +5,31 @@
 {{end}}
 
 {{define "content"}}
-<div class="w-full">
+<div class="container mx-auto">
     {{$res := index .Data "reservations"}}
 
-    <table class="table-auto w-full text-left">
+    <table class="table-auto w-full text-left mt-8">
         <thead>
           <tr>
-            <th class="px-2">ID</th>
-            <th class="px-2">Last Name</th>
-            <th class="px-2">Room</th>
-            <th class="px-2">Arrival</th>
-            <th class="px-2">Departure</th>
+            <th class="p-2">ID</th>
+            <th class="p-2">Last Name</th>
+            <th class="p-2">Room</th>
+            <th class="p-2">Arrival</th>
+            <th class="p-2">Departure</th>
           </tr>
         </thead>
         <tbody>
             {{range $res}}
-            <tr>
-                <td class="px-2">{{.ID}}</td>
-                <td class="px-2">{{.LastName}}</td>
-                <td class="px-2">{{.Room.RoomName}}</td>
-                <td class="px-2">{{humanDate .StartDate}}</td>
-                <td class="px-2">{{humanDate .EndDate}}</td>
+            <tr class="odd:bg-slate-300 hover:shadow-md hover:bg-gray-100">
+                <td class="p-2">{{.ID}}</td>
+                <td class="p-2">
+                  <a class="text-blue-500 font-bold" href="/admin/reservations-all/{{.ID}}">
+                    {{.LastName}}
+                  </a>
+                </td>
+                <td class="p-2">{{.Room.RoomName}}</td>
+                <td class="p-2">{{humanDate .StartDate}}</td>
+                <td class="p-2">{{humanDate .EndDate}}</td>
             </tr>
             {{end}}
         </tbody>

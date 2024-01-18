@@ -5,7 +5,34 @@
 {{end}}
 
 {{define "content"}}
-<div>
-    New Reservation
+<div class="container mx-auto">
+    {{$res := index .Data "reservations"}}
+
+    <table class="table-auto w-full text-left mt-8">
+        <thead>
+          <tr>
+            <th class="p-2">ID</th>
+            <th class="p-2">Last Name</th>
+            <th class="p-2">Room</th>
+            <th class="p-2">Arrival</th>
+            <th class="p-2">Departure</th>
+          </tr>
+        </thead>
+        <tbody>
+            {{range $res}}
+            <tr class="odd:bg-slate-300 hover:shadow-md hover:bg-gray-100">
+                <td class="p-2">{{.ID}}</td>
+                <td class="p-2">
+                  <a class="text-blue-500 font-bold" href="/admin/reservations/new/{{.ID}}">
+                    {{.LastName}}
+                  </a>
+                </td>
+                <td class="p-2">{{.Room.RoomName}}</td>
+                <td class="p-2">{{humanDate .StartDate}}</td>
+                <td class="p-2">{{humanDate .EndDate}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+      </table>
 </div>
 {{end}}
