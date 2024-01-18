@@ -5,7 +5,19 @@
 {{end}}
 
 {{define "content"}}
-<div>
-    Reservation Calendar
+{{$now := index .Data "now"}}
+<div class="mt-8">
+    <div class="w-full flex justify-center">
+        <h3 class="font-bold text-xl">{{formatDate $now "January"}} {{formatDate $now "2006"}}</h3>
+    </div>
+    <div class="w-full flex justify-between">
+        <div>
+            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md" href="/admin/reservations-calendar?y={{index .StringMap "last_month_year"}}&m={{index .StringMap "last_month"}}">&lt;&lt;</a>
+        </div>
+        <div>
+            <a class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-md" href="/admin/reservations-calendar?y={{index .StringMap "next_month_year"}}&m={{index .StringMap "next_month"}}">&gt;&gt;</a>
+        </div>
+        
+    </div>
 </div>
 {{end}}
