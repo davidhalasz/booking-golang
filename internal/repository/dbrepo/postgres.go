@@ -502,3 +502,60 @@ func (m *postgresDBRepo) AllRooms() ([]models.Room, error) {
 
 	return rooms, nil
 }
+
+func (m *postgresDBRepo) GetRestrictionsForRoomByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var restrictions []models.RoomRestriction
+
+	query := `
+		select id, coalesce (reservation_id, 0), restriction_id, room_id, start_date, end_date
+		from room_restrictions where $1 < end_date and $2 >= start_date
+		and room_id = $3
+	`
+
+	rows, err := m.DB.QueryContext(ctx, query, start, end, roomID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var r models.RoomRestriction
+		var startDateStr string
+		var endDateStr string
+
+		err := rows.Scan(
+			&r.ID,
+			&r.ReservationID,
+			&r.RestrictionID,
+			&r.RoomID,
+			&startDateStr,
+			&endDateStr,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		startDate, err := time.Parse("2006-01-02 15:04:05 -0700 MST", startDateStr)
+		if err != nil {
+			return nil, err
+		}
+		r.StartDate = startDate
+
+		endDate, err := time.Parse("2006-01-02 15:04:05 -0700 MST", endDateStr)
+		if err != nil {
+			return nil, err
+		}
+		r.EndDate = endDate
+		restrictions = append(restrictions, r)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return restrictions, nil
+}
