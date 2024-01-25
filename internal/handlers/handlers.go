@@ -114,10 +114,45 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	layout := "2006-01-02"
+	sd := r.Form.Get("start_date")
+	ed := r.Form.Get("end_date")
+
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "cannot get parse start date")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "cannot get parse end date")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "cannot get room id")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	room, err := m.DB.GetRoomByID(roomID)
+	if err != nil {
+		m.App.Session.Put(r.Context(), "error", "cannot get room by id")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	reservation.FirstName = r.Form.Get("first_name")
 	reservation.LastName = r.Form.Get("last_name")
 	reservation.Phone = r.Form.Get("phone")
 	reservation.Email = r.Form.Get("email")
+	reservation.StartDate = startDate
+	reservation.EndDate = endDate
+	reservation.Room = room
 
 	form := forms.New(r.PostForm)
 
@@ -127,10 +162,14 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 
 	if !form.Valid() {
 		data := make(map[string]interface{})
+		stringMap := make(map[string]string)
+		stringMap["start_date"] = sd
+		stringMap["end_date"] = ed
 		data["reservation"] = reservation
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
-			Form: form,
-			Data: data,
+			Form:      form,
+			Data:      data,
+			StringMap: stringMap,
 		})
 		return
 	}

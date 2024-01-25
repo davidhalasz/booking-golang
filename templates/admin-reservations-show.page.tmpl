@@ -34,6 +34,8 @@ Reservation
     <form action="/admin/reservations/{{$src}}/{{$res.ID}}" method="post" class="mx-auto mt-4 w-full sm:mt-20"
         novalidate>
         <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+        <input type="hidden" name="year" value="{{index .StringMap "year"}}">
+        <input type="hidden" name="month" value="{{index .StringMap "month"}}">
 
         <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
             <div>
@@ -106,7 +108,9 @@ Reservation
                 msg: 'Are you sure?',
                 callback: function (result) {
                     if (result !== false) {
-                        window.location.href = "/admin/process-reservation/{{$src}}/" + id;
+                        window.location.href = "/admin/process-reservation/{{$src}}/" 
+                            + id
+                            + "/do?y={{index .StringMap "year"}}&m={{index .StringMap "month"}}";
                     }
                 }
             })
@@ -118,7 +122,9 @@ Reservation
                 msg: 'Are you sure?',
                 callback: function (result) {
                     if (result !== false) {
-                        window.location.href = "/admin/delete-reservation/{{$src}}/" + id;
+                        window.location.href = "/admin/delete-reservation/{{$src}}/"
+                        + id
+                        + "/do?y={{index .StringMap "year"}}&m={{index .StringMap "month"}}";
                     }
                 }
             })
