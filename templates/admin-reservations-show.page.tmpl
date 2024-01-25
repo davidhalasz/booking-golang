@@ -81,7 +81,12 @@ Reservation
                         <a href="#!" onclick="processRes({{$res.ID}})"
                             class="block w-fit rounded-md bg-green-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500">Mark
                             as Processed</a>
-                        <a href="/admin/reservations-{{$src}}" class="font-bold text-red-500">Cancel</a>
+                        {{if eq $src "cal"}}
+                            <a href="#!" onclick="window.history.go(-1)" class="font-bold text-red-500">Cancel</a>
+                        {{else}}
+                            <a href="/admin/reservations-{{$src}}" class="font-bold text-red-500">Cancel</a>
+                        {{end}}
+                        
                     </div>
                     <a href="#!" onclick="deleteRes({{$res.ID}})"
                             class="block w-fit rounded-md bg-red-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-500">Delete</a>
